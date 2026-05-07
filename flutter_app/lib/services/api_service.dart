@@ -61,4 +61,44 @@ class ApiService {
       throw Exception(errorMessage);
     }
   }
+
+  static Future<Map<String, dynamic>> authPost(
+    String endpoint,
+    Map<String, String> data,
+  ) async {
+    final response = await http.post(
+      Uri.parse("$baseUrl/$endpoint"),
+      headers: await _headers(),
+      body: data,
+    );
+
+    final body = jsonDecode(response.body);
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      return body;
+    } else {
+      String errorMessage = body['message'] ?? 'Terjadi kesalahan pada server';
+      throw Exception(errorMessage);
+    }
+  }
+
+  static Future<Map<String, dynamic>> put(
+    String endpoint,
+    Map<String, String> data,
+  ) async {
+    final response = await http.put(
+      Uri.parse("$baseUrl/$endpoint"),
+      headers: await _headers(),
+      body: data,
+    );
+
+    final body = jsonDecode(response.body);
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      return body;
+    } else {
+      String errorMessage = body['message'] ?? 'Terjadi kesalahan pada server';
+      throw Exception(errorMessage);
+    }
+  }
 }
