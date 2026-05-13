@@ -19,7 +19,6 @@ class _TransactionPageState extends State<TransactionPage>
   bool _isLoading = true;
   late TabController _tabController;
 
-  // Colors
   static const Color _primaryColor = Color(0xFF5465FF);
   static const Color _incomeColor = Color(0xFF00C853);
   static const Color _expenseColor = Color(0xFFE63946);
@@ -70,27 +69,23 @@ class _TransactionPageState extends State<TransactionPage>
     try {
       final summary = await TransactionService.getSummary();
       if (mounted) setState(() => _summary = summary);
-    } catch (e) {
-      // silently fail
-    }
+    } catch (e) {}
   }
 
   Future<void> _loadTransactions() async {
     try {
-      final transactions =
-          await TransactionService.getTransactions(type: _currentFilter);
+      final transactions = await TransactionService.getTransactions(
+        type: _currentFilter,
+      );
       if (mounted) setState(() => _transactions = transactions);
-    } catch (e) {
-      // silently fail
-    }
+    } catch (e) {}
   }
 
   void _navigateToForm({TransactionModel? transaction}) async {
     final result = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) =>
-            TransactionFormPage(transaction: transaction),
+        builder: (context) => TransactionFormPage(transaction: transaction),
       ),
     );
     if (result == true) {
@@ -124,8 +119,7 @@ class _TransactionPageState extends State<TransactionPage>
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
-            child:
-                const Text("Hapus", style: TextStyle(color: Colors.white)),
+            child: const Text("Hapus", style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -141,7 +135,8 @@ class _TransactionPageState extends State<TransactionPage>
               backgroundColor: _primaryColor,
               behavior: SnackBarBehavior.floating,
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8)),
+                borderRadius: BorderRadius.circular(8),
+              ),
             ),
           );
           _loadData();
@@ -150,7 +145,9 @@ class _TransactionPageState extends State<TransactionPage>
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text("Gagal menghapus: ${e.toString().replaceFirst('Exception: ', '')}"),
+              content: Text(
+                "Gagal menghapus: ${e.toString().replaceFirst('Exception: ', '')}",
+              ),
               backgroundColor: _expenseColor,
               behavior: SnackBarBehavior.floating,
             ),
@@ -253,8 +250,7 @@ class _TransactionPageState extends State<TransactionPage>
           icon: const Icon(Icons.add_rounded, color: Colors.white),
           label: const Text(
             "Tambah",
-            style: TextStyle(
-                color: Colors.white, fontWeight: FontWeight.w600),
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
           ),
           elevation: 4,
         ),
@@ -265,7 +261,6 @@ class _TransactionPageState extends State<TransactionPage>
   Widget _buildSummaryCards() {
     return Column(
       children: [
-        // Balance Card
         Container(
           width: double.infinity,
           padding: const EdgeInsets.all(20),
@@ -314,8 +309,7 @@ class _TransactionPageState extends State<TransactionPage>
               ),
               const SizedBox(height: 14),
               Text(
-                _formatCurrency(
-                    (_summary['balance'] as num?)?.toDouble() ?? 0),
+                _formatCurrency((_summary['balance'] as num?)?.toDouble() ?? 0),
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 28,
@@ -327,7 +321,6 @@ class _TransactionPageState extends State<TransactionPage>
           ),
         ),
         const SizedBox(height: 12),
-        // Income & Expense row
         Row(
           children: [
             Expanded(
@@ -425,10 +418,7 @@ class _TransactionPageState extends State<TransactionPage>
         ),
         Text(
           "${_transactions.length} transaksi",
-          style: TextStyle(
-            fontSize: 13,
-            color: _darkText.withOpacity(0.5),
-          ),
+          style: TextStyle(fontSize: 13, color: _darkText.withOpacity(0.5)),
         ),
       ],
     );
@@ -522,8 +512,10 @@ class _TransactionPageState extends State<TransactionPage>
           ],
         ),
         child: ListTile(
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 8,
+          ),
           leading: Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
@@ -550,38 +542,58 @@ class _TransactionPageState extends State<TransactionPage>
               transaction.description?.isNotEmpty == true
                   ? transaction.description!
                   : transaction.transactionDate,
-              style: TextStyle(
-                fontSize: 12,
-                color: _darkText.withOpacity(0.5),
-              ),
+              style: TextStyle(fontSize: 12, color: _darkText.withOpacity(0.5)),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          trailing: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.end,
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                "$sign${_formatCurrency(transaction.amount)}",
-                style: TextStyle(
-                  color: color,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    "$sign${_formatCurrency(transaction.amount)}",
+                    style: TextStyle(
+                      color: color,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    transaction.transactionDate,
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: _darkText.withOpacity(0.4),
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 4),
-              Text(
-                transaction.transactionDate,
-                style: TextStyle(
-                  fontSize: 11,
-                  color: _darkText.withOpacity(0.4),
+              const SizedBox(width: 8),
+              InkWell(
+                onTap: () => _deleteTransaction(transaction),
+                borderRadius: BorderRadius.circular(8),
+                child: Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: _expenseColor.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(
+                    Icons.delete_outline_rounded,
+                    color: _expenseColor,
+                    size: 20,
+                  ),
                 ),
               ),
             ],
           ),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           onTap: () => _navigateToForm(transaction: transaction),
         ),
       ),

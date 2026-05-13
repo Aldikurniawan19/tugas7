@@ -23,7 +23,6 @@ class _TransactionFormPageState extends State<TransactionFormPage> {
 
   bool get _isEditing => widget.transaction != null;
 
-  // Colors
   static const Color _primaryColor = Color(0xFF5465FF);
   static const Color _incomeColor = Color(0xFF00C853);
   static const Color _expenseColor = Color(0xFFE63946);
@@ -108,8 +107,7 @@ class _TransactionFormPageState extends State<TransactionFormPage> {
           content: const Text("Pilih kategori terlebih dahulu"),
           backgroundColor: _expenseColor,
           behavior: SnackBarBehavior.floating,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
       );
       return;
@@ -131,7 +129,9 @@ class _TransactionFormPageState extends State<TransactionFormPage> {
     try {
       if (_isEditing) {
         await TransactionService.updateTransaction(
-            widget.transaction!.id!, transaction);
+          widget.transaction!.id!,
+          transaction,
+        );
       } else {
         await TransactionService.createTransaction(transaction);
       }
@@ -139,13 +139,16 @@ class _TransactionFormPageState extends State<TransactionFormPage> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(_isEditing
-                ? "Transaksi berhasil diperbarui"
-                : "Transaksi berhasil ditambahkan"),
+            content: Text(
+              _isEditing
+                  ? "Transaksi berhasil diperbarui"
+                  : "Transaksi berhasil ditambahkan",
+            ),
             backgroundColor: _primaryColor,
             behavior: SnackBarBehavior.floating,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
           ),
         );
         Navigator.pop(context, true);
@@ -155,7 +158,8 @@ class _TransactionFormPageState extends State<TransactionFormPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-                "Gagal: ${e.toString().replaceFirst('Exception: ', '')}"),
+              "Gagal: ${e.toString().replaceFirst('Exception: ', '')}",
+            ),
             backgroundColor: _expenseColor,
             behavior: SnackBarBehavior.floating,
           ),
@@ -173,8 +177,10 @@ class _TransactionFormPageState extends State<TransactionFormPage> {
       appBar: AppBar(
         title: Text(
           _isEditing ? "Edit Transaksi" : "Tambah Transaksi",
-          style:
-              const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
         ),
         backgroundColor: _primaryColor,
         elevation: 0,
@@ -187,37 +193,31 @@ class _TransactionFormPageState extends State<TransactionFormPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Type selector
               _buildSectionLabel("Jenis Transaksi"),
               const SizedBox(height: 8),
               _buildTypeSelector(),
               const SizedBox(height: 24),
 
-              // Amount
               _buildSectionLabel("Jumlah (Rp)"),
               const SizedBox(height: 8),
               _buildAmountField(),
               const SizedBox(height: 24),
 
-              // Category
               _buildSectionLabel("Kategori"),
               const SizedBox(height: 8),
               _buildCategorySelector(),
               const SizedBox(height: 24),
 
-              // Date
               _buildSectionLabel("Tanggal"),
               const SizedBox(height: 8),
               _buildDatePicker(),
               const SizedBox(height: 24),
 
-              // Description
               _buildSectionLabel("Keterangan (opsional)"),
               const SizedBox(height: 8),
               _buildDescriptionField(),
               const SizedBox(height: 36),
 
-              // Submit button
               _buildSubmitButton(),
             ],
           ),
@@ -257,7 +257,6 @@ class _TransactionFormPageState extends State<TransactionFormPage> {
               onTap: () {
                 setState(() {
                   _selectedType = 'income';
-                  // Reset category if current one is not in income list
                   if (_selectedCategory != null &&
                       !_incomeCategories.contains(_selectedCategory)) {
                     _selectedCategory = null;
@@ -374,7 +373,8 @@ class _TransactionFormPageState extends State<TransactionFormPage> {
         validator: (value) {
           if (value == null || value.isEmpty) return 'Jumlah wajib diisi';
           final amount = double.tryParse(value);
-          if (amount == null || amount <= 0) return 'Masukkan jumlah yang valid';
+          if (amount == null || amount <= 0)
+            return 'Masukkan jumlah yang valid';
           return null;
         },
         decoration: InputDecoration(
@@ -418,8 +418,9 @@ class _TransactionFormPageState extends State<TransactionFormPage> {
       runSpacing: 8,
       children: _categories.map((category) {
         final isSelected = _selectedCategory == category;
-        final activeColor =
-            _selectedType == 'income' ? _incomeColor : _expenseColor;
+        final activeColor = _selectedType == 'income'
+            ? _incomeColor
+            : _expenseColor;
         return GestureDetector(
           onTap: () => setState(() => _selectedCategory = category),
           child: AnimatedContainer(
@@ -534,8 +535,10 @@ class _TransactionFormPageState extends State<TransactionFormPage> {
             borderRadius: BorderRadius.circular(16),
             borderSide: const BorderSide(color: _primaryColor, width: 2),
           ),
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 14,
+          ),
         ),
       ),
     );
@@ -548,9 +551,7 @@ class _TransactionFormPageState extends State<TransactionFormPage> {
         backgroundColor: _primaryColor,
         foregroundColor: Colors.white,
         padding: const EdgeInsets.symmetric(vertical: 16),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         elevation: 4,
         shadowColor: _primaryColor.withOpacity(0.4),
       ),
@@ -565,10 +566,7 @@ class _TransactionFormPageState extends State<TransactionFormPage> {
             )
           : Text(
               _isEditing ? "Simpan Perubahan" : "Tambah Transaksi",
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
     );
   }

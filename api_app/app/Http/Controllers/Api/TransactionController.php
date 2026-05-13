@@ -8,11 +8,7 @@ use Illuminate\Http\Request;
 
 class TransactionController extends Controller
 {
-    /**
-     * GET /api/transactions
-     * List semua transaksi milik user yang login.
-     * Query params: ?type=income|expense
-     */
+    
     public function index(Request $request)
     {
         $query = $request->user()->transactions()->orderBy('transaction_date', 'desc')->orderBy('created_at', 'desc');
@@ -29,10 +25,7 @@ class TransactionController extends Controller
         ]);
     }
 
-    /**
-     * POST /api/transactions
-     * Tambah transaksi baru.
-     */
+    
     public function store(Request $request)
     {
         $request->validate([
@@ -57,10 +50,7 @@ class TransactionController extends Controller
         ], 201);
     }
 
-    /**
-     * GET /api/transactions/{id}
-     * Detail satu transaksi.
-     */
+   
     public function show(Request $request, string $id)
     {
         $transaction = $request->user()->transactions()->find($id);
@@ -77,10 +67,7 @@ class TransactionController extends Controller
         ]);
     }
 
-    /**
-     * PUT /api/transactions/{id}
-     * Update transaksi.
-     */
+   
     public function update(Request $request, string $id)
     {
         $transaction = $request->user()->transactions()->find($id);
@@ -113,10 +100,7 @@ class TransactionController extends Controller
         ]);
     }
 
-    /**
-     * DELETE /api/transactions/{id}
-     * Hapus transaksi.
-     */
+    
     public function destroy(Request $request, string $id)
     {
         $transaction = $request->user()->transactions()->find($id);
@@ -134,10 +118,7 @@ class TransactionController extends Controller
         ]);
     }
 
-    /**
-     * GET /api/transactions/summary
-     * Ringkasan total income, expense, dan balance.
-     */
+    
     public function summary(Request $request)
     {
         $userId = $request->user()->id;

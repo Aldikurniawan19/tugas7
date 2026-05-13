@@ -41,10 +41,8 @@ class _HomePageState extends State<HomePage> {
       final transactions = await TransactionService.getTransactions();
       final summary = await TransactionService.getSummary();
 
-      // Filter only expenses
       final expenses = transactions.where((t) => t.type == 'expense').toList();
 
-      // Find highest expense
       TransactionModel? highest;
       if (expenses.isNotEmpty) {
         highest = expenses.reduce(
@@ -183,7 +181,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // ─── Gradient Header with greeting ───────────────────────────
   Widget _buildHeader() {
     return Container(
       padding: const EdgeInsets.fromLTRB(24, 56, 24, 50),
@@ -222,7 +219,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // ─── Balance + Income/Expense overview ───────────────────────
   Widget _buildBalanceCard() {
     final balance = (_summary['balance'] as num?)?.toDouble() ?? 0;
     final income = (_summary['total_income'] as num?)?.toDouble() ?? 0;
@@ -234,88 +230,88 @@ class _HomePageState extends State<HomePage> {
       decoration: BoxDecoration(
         color: _cardColor,
         borderRadius: BorderRadius.circular(24),
-          boxShadow: [
-            BoxShadow(
-              color: _darkText.withOpacity(0.08),
-              blurRadius: 20,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
-        child: Column(
-          children: [
-            // Sisa Uang
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: _primaryColor.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: const Icon(
-                    Icons.account_balance_wallet_rounded,
-                    color: _primaryColor,
-                    size: 24,
-                  ),
+        boxShadow: [
+          BoxShadow(
+            color: _darkText.withOpacity(0.08),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          // Sisa Uang
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: _primaryColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                const SizedBox(width: 14),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Sisa Uang",
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: _darkText.withOpacity(0.5),
-                        fontWeight: FontWeight.w500,
-                      ),
+                child: const Icon(
+                  Icons.account_balance_wallet_rounded,
+                  color: _primaryColor,
+                  size: 24,
+                ),
+              ),
+              const SizedBox(width: 14),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Sisa Uang",
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: _darkText.withOpacity(0.5),
+                      fontWeight: FontWeight.w500,
                     ),
-                    const SizedBox(height: 2),
-                    Text(
-                      _formatCurrency(balance),
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: balance >= 0 ? _primaryColor : _expenseColor,
-                      ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    _formatCurrency(balance),
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: balance >= 0 ? _primaryColor : _expenseColor,
                     ),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Divider(color: _darkText.withOpacity(0.06), height: 1),
-            const SizedBox(height: 16),
-            // Income & Expense row
-            Row(
-              children: [
-                Expanded(
-                  child: _buildMiniStat(
-                    icon: Icons.arrow_downward_rounded,
-                    label: "Pemasukan",
-                    amount: income,
-                    color: _incomeColor,
                   ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Divider(color: _darkText.withOpacity(0.06), height: 1),
+          const SizedBox(height: 16),
+          // Income & Expense row
+          Row(
+            children: [
+              Expanded(
+                child: _buildMiniStat(
+                  icon: Icons.arrow_downward_rounded,
+                  label: "Pemasukan",
+                  amount: income,
+                  color: _incomeColor,
                 ),
-                Container(
-                  width: 1,
-                  height: 40,
-                  color: _darkText.withOpacity(0.06),
+              ),
+              Container(
+                width: 1,
+                height: 40,
+                color: _darkText.withOpacity(0.06),
+              ),
+              Expanded(
+                child: _buildMiniStat(
+                  icon: Icons.arrow_upward_rounded,
+                  label: "Pengeluaran",
+                  amount: expense,
+                  color: _expenseColor,
                 ),
-                Expanded(
-                  child: _buildMiniStat(
-                    icon: Icons.arrow_upward_rounded,
-                    label: "Pengeluaran",
-                    amount: expense,
-                    color: _expenseColor,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      );
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildMiniStat({
@@ -361,7 +357,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // ─── Highest Expense Card ────────────────────────────────────
   Widget _buildHighestExpenseCard() {
     final t = _highestExpense!;
 
@@ -471,7 +466,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // ─── Empty State ─────────────────────────────────────────────
   Widget _buildEmptyState() {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 50),
@@ -501,7 +495,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // ─── Expense List Item ───────────────────────────────────────
   Widget _buildExpenseItem(TransactionModel transaction) {
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
